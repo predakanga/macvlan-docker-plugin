@@ -122,16 +122,14 @@ func (d *Driver) CreateEndpoint(r *sdk.CreateEndpointRequest) (*sdk.CreateEndpoi
 	if containerAddress == "" {
 		return nil, fmt.Errorf("Unable to obtain an IP address from libnetwork default ipam")
 	}
-	// generate a mac address for the pending container
-	mac := makeMac(net.ParseIP(containerAddress))
 
 	log.Infof("Allocated container IP: [ %s ]", containerAddress)
 	// IP addrs comes from libnetwork ipam via user 'docker network' parameters
 
+	// When called with a populated r.Interface (the only case allowed for),
+	// the return struct must be empty as per https://github.com/docker/libnetwork/blob/master/docs/remote.md
 	res := &sdk.CreateEndpointResponse{
 		Interface: &sdk.EndpointInterface{
-			Address:    containerAddress,
-			MacAddress: mac,
 		},
 	}
 	log.Debugf("Create endpoint response: %+v", res)
